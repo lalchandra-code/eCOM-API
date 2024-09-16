@@ -2,6 +2,8 @@
 import express from 'express';
 import swagger from 'swagger-ui-express';
 import cors from 'cors';
+import mongoose from 'mongoose';
+import dotenv from 'dotenv';
 
 import productRouter from './src/features/product/product.routes.js';
 import userRouter from './src/features/user/user.routes.js';
@@ -10,8 +12,19 @@ import cartRouter from './src/features/cartItems/cartItems.routes.js';
 import apiDocs from './swagger.json' assert {type: 'json'};
 import loggerMiddleware from './src/middlewares/logger.middleware.js';
 import { ApplicationError } from './src/error-handler/applicationError.js';
+
+//1. eviroment variable setup
+dotenv.config();
+
+
+
 // 2. Create Server
 const server = express();
+
+const PORT=process.env.PORT || 3200
+
+//3.connecting with database
+mongoose.connect(process.env.MONGO_URL).then(error=>{console.log("Connected  to database")});
 
 // CORS policy configuration
 
@@ -77,6 +90,7 @@ server.use((req, res)=>{
 
 
 // 5. Specify port.
-server.listen(3200);
+server.listen(PORT,()=>{
+  console.log(`Server is running on port ${PORT}`);
+});
 
-console.log('Server is running at 3200');
